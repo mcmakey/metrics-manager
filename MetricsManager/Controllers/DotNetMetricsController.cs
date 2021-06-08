@@ -3,20 +3,20 @@ using System;
 
 namespace MetricsManager.Controllers
 {
-    [Route("api/metrics/cpu")]
+    [Route("api/metrics/dotnet")]
     [ApiController]
-    public class CpuMetricsController : ControllerBase
+    public class DotNetMetricsController : ControllerBase
     {
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            return Ok("cpu GetMetricsFromAgent");
+            return Ok("dotnet GetMetricsFromAgent");
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
-            return Ok("cpu GetMetricsFromAllCluster");
+            return Ok("dotnet GetMetricsFromAllCluster");
         }
     }
 }
