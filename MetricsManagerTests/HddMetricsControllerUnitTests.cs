@@ -5,14 +5,14 @@ using Xunit;
 
 namespace MetricsManagerTests
 {
-    public class DotNetMetricsControllerUnitTests
+    public class HddMetricsControllerUnitTests
     {
 
-        private DotNetMetricsController _controller;
+        private HddMetricsController _controller;
 
-        public DotNetMetricsControllerUnitTests()
+        public HddMetricsControllerUnitTests()
         {
-            _controller = new DotNetMetricsController();
+            _controller = new HddMetricsController();
         }
 
         [Fact]

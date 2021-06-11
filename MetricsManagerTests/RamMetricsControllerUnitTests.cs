@@ -5,14 +5,14 @@ using Xunit;
 
 namespace MetricsManagerTests
 {
-    public class DotNetMetricsControllerUnitTests
+    public class RamMetricsControllerUnitTests
     {
 
-        private DotNetMetricsController _controller;
+        private RamMetricsController _controller;
 
-        public DotNetMetricsControllerUnitTests()
+        public RamMetricsControllerUnitTests()
         {
-            _controller = new DotNetMetricsController();
+            _controller = new RamMetricsController();
         }
 
         [Fact]
