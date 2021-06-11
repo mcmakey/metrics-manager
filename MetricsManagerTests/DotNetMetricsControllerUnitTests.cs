@@ -5,14 +5,14 @@ using Xunit;
 
 namespace MetricsManagerTests
 {
-    public class CpuMetricsControllerUnitTests
+    public class DotNetMetricsControllerUnitTests
     {
 
-        private CpuMetricsController _controller;
+        private DotNetMetricsController _controller;
 
-        public CpuMetricsControllerUnitTests()
+        public DotNetMetricsControllerUnitTests()
         {
-            _controller = new CpuMetricsController();
+            _controller = new DotNetMetricsController();
         }
 
         [Fact]
@@ -25,9 +25,11 @@ namespace MetricsManagerTests
 
             // Act
             var result = _controller.GetMetricsFromAgent(agentId, fromTime, toTime);
+            var ttt = _controller.GetMetricsFromAllCluster(fromTime, toTime);
 
             // Assert
             _ = Assert.IsAssignableFrom<IActionResult>(result);
+            _ = Assert.IsAssignableFrom<IActionResult>(ttt);
 
         }
 
