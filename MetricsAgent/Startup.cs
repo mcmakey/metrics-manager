@@ -17,6 +17,7 @@ namespace MetricsAgent
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -36,8 +37,12 @@ namespace MetricsAgent
         {
             using (var command = new SQLiteCommand(connection))
             {
-                command.CommandText = "DROP TABLE IF EXIST cpmumetrics";
+                // задаем новый текст команды для выполнения
+                // удаляем таблицу с метриками если она существует в базе данных
+                command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
+                // отправляем запрос в базу данных
                 command.ExecuteNonQuery();
+
 
                 command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
                     value INT, time INT)";
@@ -45,14 +50,13 @@ namespace MetricsAgent
             }
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
