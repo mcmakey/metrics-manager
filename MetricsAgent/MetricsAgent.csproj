@@ -11,4 +11,8 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.114.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="nlog.config" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
