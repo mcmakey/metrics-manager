@@ -45,7 +45,7 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(new CpuMetricDto 
                 {
-                    Time = metric.Time,
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
                     Value = metric.Value,
                     Id = metric.Id
                 });

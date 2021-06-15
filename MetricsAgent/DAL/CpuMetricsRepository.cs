@@ -24,7 +24,7 @@ namespace MetricsAgent.DAL
             using var cmd = new SQLiteCommand(connection);
             cmd.CommandText = "INSERT INTO cpumetrics(value, time) VALUES(@value, @time)";
             cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
+            cmd.Parameters.AddWithValue("@time", item.Time);
             cmd.Prepare();
 
             cmd.ExecuteNonQuery();
@@ -48,7 +48,7 @@ namespace MetricsAgent.DAL
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                        Time = reader.GetInt64(1)
                     });
                 }
             }
