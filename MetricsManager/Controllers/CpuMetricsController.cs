@@ -13,19 +13,22 @@ namespace MetricsManager.Controllers
         public CpuMetricsController(ILogger<CpuMetricsController> logger)
         {
             _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        public IActionResult GetMetricsFromAgent(
+            [FromRoute] int agentId,
+            [FromRoute] DateTimeOffset fromTime,
+            [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог");
+            _logger.LogInformation($"GetMetricsFromAgent agentId={agentId}, fromTime={fromTime}, toTime={toTime}");
             return Ok("cpu GetMetricsFromAgent");
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllCluster([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
+            _logger.LogInformation($"GetMetricsFromAllCluster fromTime={fromTime}, toTime={toTime}");
             return Ok("cpu GetMetricsFromAllCluster");
         }
     }
