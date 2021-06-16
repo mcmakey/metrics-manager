@@ -23,6 +23,7 @@ namespace MetricsAgent
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
@@ -37,14 +38,21 @@ namespace MetricsAgent
         {
             using (var command = new SQLiteCommand(connection))
             {
-                // задаем новый текст команды для выполнения
-                // удаляем таблицу с метриками если она существует в базе данных
                 command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
-                // отправляем запрос в базу данных
                 command.ExecuteNonQuery();
 
 
                 command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
+                    value INT, time INT)";
+                command.ExecuteNonQuery();
+
+
+
+                command.CommandText = "DROP TABLE IF EXISTS dotnetmetrics";
+                command.ExecuteNonQuery();
+
+
+                command.CommandText = @"CREATE TABLE dotnetmetrics(id INTEGER PRIMARY KEY,
                     value INT, time INT)";
                 command.ExecuteNonQuery();
             }

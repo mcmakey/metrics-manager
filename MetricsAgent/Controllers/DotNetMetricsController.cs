@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using MetricsAgent.DAL;
+using MetricsAgent.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MetricsAgent.Requests;
 
 namespace MetricsAgent.Controllers
 {
@@ -8,18 +10,27 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class DotNetMetricsController : ControllerBase
     {
+        private IDotNetMetricsRepository _repository;
         private readonly ILogger<DotNetMetricsController> _logger;
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger)
+        public DotNetMetricsController(IDotNetMetricsRepository repository, ILogger<DotNetMetricsController> logger)
         {
+            _repository = repository;
             _logger = logger;
         }
 
-        [HttpGet("errors-count/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
         {
-            _logger.LogInformation($"GetMetrics fromTime={fromTime}, toTime={toTime}");
-            return Ok("dotnet GetMetrics");
+            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+
+            _repository.Create(new DotNetMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
         }
     }
 }
