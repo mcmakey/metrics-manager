@@ -62,11 +62,11 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetByTimePeriod([FromRoute] long fromTime, [FromRoute] long toTime)
+        public IActionResult GetByTimePeriod([FromRoute] MetricGetByPeriodRequest request)
         {
-            _logger.LogInformation($"GetByTimePeriod fromTime={fromTime}, toTime={toTime}");
+            _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
 
-            var metrics = _repository.GetByTimePeriod(fromTime, toTime);
+            var metrics = _repository.GetByTimePeriod(request.FromTime, request.ToTime);
 
             var response = new CpuMetricsByTimePeriodResponse()
             {
