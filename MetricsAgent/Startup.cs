@@ -25,6 +25,7 @@ namespace MetricsAgent
             services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
             services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
             services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
@@ -61,6 +62,12 @@ namespace MetricsAgent
                 command.CommandText = "DROP TABLE IF EXISTS networkmetrics";
                 command.ExecuteNonQuery();
                 command.CommandText = @"CREATE TABLE networkmetrics(id INTEGER PRIMARY KEY, value INT, time INT)";
+                command.ExecuteNonQuery();
+
+                // rammetrics
+                command.CommandText = "DROP TABLE IF EXISTS rammetrics";
+                command.ExecuteNonQuery();
+                command.CommandText = @"CREATE TABLE rammetrics(id INTEGER PRIMARY KEY, value INT, time INT)";
                 command.ExecuteNonQuery();
             }
         }

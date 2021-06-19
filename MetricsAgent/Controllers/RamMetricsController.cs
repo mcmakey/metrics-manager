@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.Extensions.Logging;
+using MetricsAgent.DAL;
+using MetricsAgent.Requests;
+using MetricsAgent.Models;
+using MetricsAgent.Responses;
+using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
@@ -8,18 +13,77 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class RamMetricsController : ControllerBase
     {
+        private IRamMetricsRepository _repository;
         private readonly ILogger<RamMetricsController> _logger;
 
-        public RamMetricsController(ILogger<RamMetricsController> logger)
+        public RamMetricsController(IRamMetricsRepository repository, ILogger<RamMetricsController> logger)
         {
+            _repository = repository;
             _logger = logger;
         }
 
-        [HttpGet("available/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] RamMetricsCreateRequest request)
         {
-            _logger.LogInformation($"GetMetrics fromTime={fromTime}, toTime={toTime}");
-            return Ok("ram GetMetrics");
+            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+
+            _repository.Create(new RamMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+        }
+
+        [HttpGet("All")]
+        public IActionResult GetAll()
+        {
+            _logger.LogInformation("All");
+
+            var metrics = _repository.GetAll();
+
+            var response = new AllRamMetricsResponse()
+            {
+                Metrics = new List<RamMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new RamMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetByTimePeriod([FromRoute] RamMetricsGetByPeriodRequest request)
+        {
+            _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
+
+            var metrics = _repository.GetByTimePeriod(request.FromTime, request.ToTime);
+
+            var response = new RamMetricsByTimePeriodResponse()
+            {
+                Metrics = new List<RamMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new RamMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
         }
     }
 }
