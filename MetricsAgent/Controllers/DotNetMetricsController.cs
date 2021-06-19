@@ -3,6 +3,9 @@ using MetricsAgent.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MetricsAgent.Requests;
+using MetricsAgent.Responses;
+using System;
+using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
@@ -20,7 +23,7 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
+        public IActionResult Create([FromBody] DotNetMetricsCreateRequest request)
         {
             _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
 
@@ -31,6 +34,56 @@ namespace MetricsAgent.Controllers
             });
 
             return Ok();
+        }
+
+        [HttpGet("All")]
+        public IActionResult GetAll()
+        {
+            _logger.LogInformation("All");
+
+            var metrics = _repository.GetAll();
+
+            var response = new AllDotNetMetricsResponse()
+            {
+                Metrics = new List<DotNetMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new DotNetMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetByTimePeriod([FromRoute] DotNetMetricsGetByPeriodRequest request)
+        {
+            _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
+
+            var metrics = _repository.GetByTimePeriod(request.FromTime, request.ToTime);
+
+            var response = new DotNetMetricsByTimePeriodResponse()
+            {
+                Metrics = new List<DotNetMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new DotNetMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
         }
     }
 }

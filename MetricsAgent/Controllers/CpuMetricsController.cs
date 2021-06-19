@@ -23,7 +23,7 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        public IActionResult Create([FromBody] CpuMetricsCreateRequest request)
         {
             _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
 
@@ -62,7 +62,7 @@ namespace MetricsAgent.Controllers
         }
 
         [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetByTimePeriod([FromRoute] MetricGetByPeriodRequest request)
+        public IActionResult GetByTimePeriod([FromRoute] CpuMetricsGetByPeriodRequest request)
         {
             _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
 

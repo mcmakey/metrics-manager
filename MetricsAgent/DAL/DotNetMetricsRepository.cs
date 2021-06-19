@@ -35,7 +35,7 @@ namespace MetricsAgent.DAL
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics";
+            cmd.CommandText = "SELECT * FROM dotnetmetrics";
 
             var returnList = new List<DotNetMetric>();
 
@@ -61,7 +61,7 @@ namespace MetricsAgent.DAL
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics WHERE time >= @fromTime AND time <= @toTime";
+            cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE time >= @fromTime AND time <= @toTime";
             cmd.Parameters.AddWithValue("@fromTime", fromTime);
             cmd.Parameters.AddWithValue("@toTime", toTime);
             cmd.Prepare();
