@@ -39,7 +39,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("All")]
         public IActionResult GetAll()
         {
-            _logger.LogInformation($"All");
+            _logger.LogInformation("All");
 
             var metrics = _repository.GetAll();
 
@@ -50,7 +50,32 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto 
+                response.Metrics.Add(new CpuMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetByTimePeriod([FromRoute] long fromTime, [FromRoute] long toTime)
+        {
+            _logger.LogInformation($"GetByTimePeriod fromTime={fromTime}, toTime={toTime}");
+
+            var metrics = _repository.GetByTimePeriod(fromTime, toTime);
+
+            var response = new CpuMetricsByTimePeriodResponse()
+            {
+                Metrics = new List<CpuMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new CpuMetricDto
                 {
                     Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
                     Value = metric.Value,

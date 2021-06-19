@@ -54,5 +54,34 @@ namespace MetricsAgent.DAL
 
             return returnList;
         }
+
+        public IList<DotNetMetric> GetByTimePeriod(long fromTime, long toTime)
+        {
+            using var connection = new SQLiteConnection(ConnectionString);
+            connection.Open();
+
+            using var cmd = new SQLiteCommand(connection);
+            cmd.CommandText = "SELECT * FROM cpumetrics WHERE time >= @fromTime AND time <= @toTime";
+            cmd.Parameters.AddWithValue("@fromTime", fromTime);
+            cmd.Parameters.AddWithValue("@toTime", toTime);
+            cmd.Prepare();
+
+            var result = new List<DotNetMetric>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    result.Add(new DotNetMetric
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = reader.GetInt64(1)
+                    });
+                }
+            }
+
+            return result;
+        }
     }
 }

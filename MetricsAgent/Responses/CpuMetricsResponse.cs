@@ -8,6 +8,11 @@ namespace MetricsAgent.Responses
         public List<CpuMetricDto> Metrics { get; set; }
     }
 
+    public class CpuMetricsByTimePeriodResponse
+    {
+        public List<CpuMetricDto> Metrics { get; set; }
+    }
+
     public class CpuMetricDto
     {
         public DateTimeOffset Time { get; set; }

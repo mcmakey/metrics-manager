@@ -1,4 +1,5 @@
 ﻿using MetricsAgent.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 
@@ -53,6 +54,35 @@ namespace MetricsAgent.DAL
             }
 
             return returnList;
+        }
+
+        public IList<CpuMetric> GetByTimePeriod(long fromTime, long toTime)
+        {
+            using var connection = new SQLiteConnection(ConnectionString);
+            connection.Open();
+
+            using var cmd = new SQLiteCommand(connection);
+            cmd.CommandText = "SELECT * FROM cpumetrics WHERE time >= @fromTime AND time <= @toTime";
+            cmd.Parameters.AddWithValue("@fromTime", fromTime);
+            cmd.Parameters.AddWithValue("@toTime", toTime);
+            cmd.Prepare();
+
+            var result = new List<CpuMetric>();
+
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    result.Add(new CpuMetric
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = reader.GetInt64(1)
+                    });
+                }
+            }
+
+            return result;
         }
     }
 }
