@@ -1,6 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using Microsoft.Extensions.Logging;
+using MetricsAgent.DAL;
+using MetricsAgent.Requests;
+using MetricsAgent.Models;
+using MetricsAgent.Responses;
+using System.Collections.Generic;
 
 namespace MetricsAgent.Controllers
 {
@@ -8,18 +13,77 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class NetworkMetricsController : ControllerBase
     {
+        private INetworkMetricsRepository _repository;
         private readonly ILogger<NetworkMetricsController> _logger;
 
-        public NetworkMetricsController(ILogger<NetworkMetricsController> logger)
+        public NetworkMetricsController(INetworkMetricsRepository repository, ILogger<NetworkMetricsController> logger)
         {
+            _repository = repository;
             _logger = logger;
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetrics([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] NetworkMetricsCreateRequest request)
         {
-            _logger.LogInformation($"GetMetrics fromTime={fromTime}, toTime={toTime}");
-            return Ok("network GetMetrics");
+            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+
+            _repository.Create(new NetworkMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+        }
+
+        [HttpGet("All")]
+        public IActionResult GetAll()
+        {
+            _logger.LogInformation("All");
+
+            var metrics = _repository.GetAll();
+
+            var response = new AllNetworkMetricsResponse()
+            {
+                Metrics = new List<NetworkMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new NetworkMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
+        public IActionResult GetByTimePeriod([FromRoute] NetworkMetricsGetByPeriodRequest request)
+        {
+            _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
+
+            var metrics = _repository.GetByTimePeriod(request.FromTime, request.ToTime);
+
+            var response = new NetworkMetricsByTimePeriodResponse()
+            {
+                Metrics = new List<NetworkMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new NetworkMetricDto
+                {
+                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Value = metric.Value,
+                    Id = metric.Id
+                });
+            }
+
+            return Ok(response);
         }
     }
 }

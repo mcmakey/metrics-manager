@@ -6,22 +6,22 @@ namespace MetricsAgent.DAL
 {
     // маркировочный интерфейс
     // необходим, чтобы проверить работу репозитория на тесте-заглушке
-    public interface IHddMetricsRepository : IRepository<HddMetric>
+    public interface INetworkMetricsRepository : IRepository<NetworkMetric>
     {
 
     }
 
-    public class HddMetricsRepository : IHddMetricsRepository
+    public class NetworkMetricsRepository : INetworkMetricsRepository
     {
         private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
 
-        public void Create(HddMetric item)
+        public void Create(NetworkMetric item)
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "INSERT INTO hddmetrics(value, time) VALUES(@value, @time)";
+            cmd.CommandText = "INSERT INTO networkmetrics(value, time) VALUES(@value, @time)";
             cmd.Parameters.AddWithValue("@value", item.Value);
             cmd.Parameters.AddWithValue("@time", item.Time);
             cmd.Prepare();
@@ -29,21 +29,21 @@ namespace MetricsAgent.DAL
             cmd.ExecuteNonQuery();
         }
 
-        public IList<HddMetric> GetAll()
+        public IList<NetworkMetric> GetAll()
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM hddmetrics";
+            cmd.CommandText = "SELECT * FROM networkmetrics";
 
-            var returnList = new List<HddMetric>();
+            var returnList = new List<NetworkMetric>();
 
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    returnList.Add(new HddMetric
+                    returnList.Add(new NetworkMetric
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
@@ -55,24 +55,24 @@ namespace MetricsAgent.DAL
             return returnList;
         }
 
-        public IList<HddMetric> GetByTimePeriod(long fromTime, long toTime)
+        public IList<NetworkMetric> GetByTimePeriod(long fromTime, long toTime)
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM hddmetrics WHERE time >= @fromTime AND time <= @toTime";
+            cmd.CommandText = "SELECT * FROM networkmetrics WHERE time >= @fromTime AND time <= @toTime";
             cmd.Parameters.AddWithValue("@fromTime", fromTime);
             cmd.Parameters.AddWithValue("@toTime", toTime);
             cmd.Prepare();
 
-            var result = new List<HddMetric>();
+            var result = new List<NetworkMetric>();
 
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    result.Add(new HddMetric
+                    result.Add(new NetworkMetric
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
