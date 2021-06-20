@@ -48,7 +48,10 @@ namespace MetricsAgent.Controllers
         [HttpGet("All")]
         public IActionResult GetAll()
         {
-            _logger.LogInformation("All");
+            if (_logger is not null)
+            {
+                _logger.LogInformation("All");
+            }
 
             var metrics = _repository.GetAll();
 
@@ -73,7 +76,10 @@ namespace MetricsAgent.Controllers
         [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
         public IActionResult GetByTimePeriod([FromRoute] CpuMetricsGetByPeriodRequest request)
         {
-            _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
+            if (_logger is not null)
+            {
+                _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
+            }
 
             var metrics = _repository.GetByTimePeriod(request.FromTime, request.ToTime);
 
