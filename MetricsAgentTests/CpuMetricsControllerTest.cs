@@ -1,6 +1,7 @@
 using MetricsAgent.Controllers;
 using MetricsAgent.DAL;
 using MetricsAgent.Models;
+using MetricsAgent.Requests;
 using Moq;
 using Xunit;
 
@@ -23,7 +24,7 @@ namespace MetricsAgentTests
             _mock.Setup(repository => repository.Create(It.IsAny<CpuMetric>())).Verifiable();
 
             var result = _controller.Create(
-                    new MetricsAgent.Requests.CpuMetricsCreateRequest { Time = 1, Value = 50 }
+                    new CpuMetricsCreateRequest { Time = 1, Value = 50 }
                 );
 
             _mock.Verify(repository => repository.Create(It.IsAny<CpuMetric>()), Times.AtMostOnce());

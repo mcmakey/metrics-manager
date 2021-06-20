@@ -1,6 +1,7 @@
 using MetricsAgent.Controllers;
 using MetricsAgent.DAL;
 using MetricsAgent.Models;
+using MetricsAgent.Requests;
 using Moq;
 using Xunit;
 
@@ -23,7 +24,7 @@ namespace MetricsAgentTests
             _mock.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
             var result = _controller.Create(
-                    new MetricsAgent.Requests.RamMetricsCreateRequest { Time = 1, Value = 50 }
+                    new RamMetricsCreateRequest { Time = 1, Value = 50 }
                 );
 
             _mock.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());

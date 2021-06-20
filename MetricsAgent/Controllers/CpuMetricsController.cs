@@ -22,7 +22,6 @@ namespace MetricsAgent.Controllers
             _logger = logger;
         }
 
-        // dev for test
         public CpuMetricsController(ICpuMetricsRepository repository)
         {
             _repository = repository;
