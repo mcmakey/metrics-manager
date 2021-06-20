@@ -16,6 +16,11 @@ namespace MetricsAgent.Controllers
         private IRamMetricsRepository _repository;
         private readonly ILogger<RamMetricsController> _logger;
 
+        public RamMetricsController(IRamMetricsRepository repository)
+        {
+            _repository = repository;
+        }
+
         public RamMetricsController(IRamMetricsRepository repository, ILogger<RamMetricsController> logger)
         {
             _repository = repository;
@@ -25,7 +30,10 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] RamMetricsCreateRequest request)
         {
-            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+            if (_logger is not null)
+            {
+                _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+            }
 
             _repository.Create(new RamMetric
             {

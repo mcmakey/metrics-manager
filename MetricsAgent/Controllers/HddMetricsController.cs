@@ -22,10 +22,18 @@ namespace MetricsAgent.Controllers
             _logger = logger;
         }
 
+        public HddMetricsController(IHddMetricsRepository repository)
+        {
+            _repository = repository;
+        }
+
         [HttpPost("create")]
         public IActionResult Create([FromBody] HddMetricsCreateRequest request)
         {
-            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+            if (_logger is not null)
+            {
+                _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+            }
 
             _repository.Create(new HddMetric
             {

@@ -22,10 +22,19 @@ namespace MetricsAgent.Controllers
             _logger = logger;
         }
 
+        // dev for test
+        public CpuMetricsController(ICpuMetricsRepository repository)
+        {
+            _repository = repository;
+        }
+
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuMetricsCreateRequest request)
         {
-            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+            if (_logger is not null)
+            {
+                _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
+            }
 
             _repository.Create(new CpuMetric
             {

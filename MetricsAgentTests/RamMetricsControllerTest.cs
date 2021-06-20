@@ -1,6 +1,7 @@
 using MetricsAgent.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using System;
+using MetricsAgent.DAL;
+using MetricsAgent.Models;
+using Moq;
 using Xunit;
 
 namespace MetricsAgentTests
@@ -8,25 +9,43 @@ namespace MetricsAgentTests
     public class RamMetricsControllerTest
     {
         private RamMetricsController _controller;
+        private Mock<IRamMetricsRepository> _mock;
 
         public RamMetricsControllerTest()
         {
-            _controller = new RamMetricsController();
+            _mock = new Mock<IRamMetricsRepository>();
+            _controller = new RamMetricsController(_mock.Object);
         }
 
         [Fact]
-        public void GetMetrics_ReturnsOk()
+        //public void GetMetrics_ReturnsOk()
+        //{
+        //    // Arrange
+        //    var fromTime = DateTimeOffset.FromUnixTimeSeconds(0);
+        //    var toTime = DateTimeOffset.FromUnixTimeSeconds(100);
+
+        //    // Act
+        //    var result = _controller.GetMetrics(fromTime, toTime);
+
+        //    // Assert
+        //    _ = Assert.IsAssignableFrom<IActionResult>(result);
+
+        //}
+
+        public void Create_ShouldCall_Create_From_Repository()
         {
-            // Arrange
-            var fromTime = DateTimeOffset.FromUnixTimeSeconds(0);
-            var toTime = DateTimeOffset.FromUnixTimeSeconds(100);
+            // устанавливаем параметр заглушки
+            // в заглушке прописываем что в репозиторий прилетит CpuMetric объект
+            _mock.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
-            // Act
-            var result = _controller.GetMetrics(fromTime, toTime);
+            // выполняем действие на контроллере
+            var result = _controller.Create(
+                    new MetricsAgent.Requests.RamMetricsCreateRequest { Time = 1, Value = 50 }
+                );
 
-            // Assert
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
-
+            // проверяем заглушку на то, что пока работал контроллер
+            // действительно вызвался метод Create репозитория с нужным типом объекта в параметре
+            _mock.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
         }
     }
 }
