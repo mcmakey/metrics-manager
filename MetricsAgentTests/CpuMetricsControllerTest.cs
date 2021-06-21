@@ -34,7 +34,13 @@ namespace MetricsAgentTests
         [Fact]
         public void GetAll_ShouldCall_From_Repository()
         {
-            _mock.Setup(repository => repository.GetAll()).Verifiable();
+            var metrics = new List<CpuMetric>
+            {
+                new CpuMetric {Id = 1, Value = 100, Time = 1},
+                new CpuMetric {Id = 2, Value = 200, Time = 2}
+            };
+
+            _mock.Setup(repository => repository.GetAll()).Returns(metrics);
 
             var result = _controller.GetAll();
 
@@ -44,7 +50,13 @@ namespace MetricsAgentTests
         [Fact]
         public void GetByTimePeriod_ShouldCall_From_Repository()
         {
-            _mock.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Verifiable();
+            var metrics = new List<CpuMetric>
+            {
+                new CpuMetric {Id = 1, Value = 100, Time = 1},
+                new CpuMetric {Id = 2, Value = 200, Time = 2}
+            };
+
+            _mock.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(metrics);
 
             var result = _controller.GetByTimePeriod(
                     new CpuMetricsGetByPeriodRequest { FromTime = 1, ToTime = 2 }
