@@ -1,5 +1,5 @@
 using MetricsAgent.Controllers;
-using MetricsAgent.DAL;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Models;
 using MetricsAgent.Requests;
 using Moq;
