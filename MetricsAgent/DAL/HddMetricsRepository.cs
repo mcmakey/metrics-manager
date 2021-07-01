@@ -1,16 +1,10 @@
-﻿using MetricsAgent.Models;
+﻿using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.Models;
 using System.Collections.Generic;
 using System.Data.SQLite;
 
 namespace MetricsAgent.DAL
 {
-    // маркировочный интерфейс
-    // необходим, чтобы проверить работу репозитория на тесте-заглушке
-    public interface IHddMetricsRepository : IRepository<HddMetric>
-    {
-
-    }
-
     public class HddMetricsRepository : IHddMetricsRepository
     {
         private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";

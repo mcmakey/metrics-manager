@@ -5,7 +5,7 @@ using MetricsAgent.Responses;
 using MetricsAgent.Requests;
 using System.Collections.Generic;
 using MetricsAgent.Models;
-using MetricsAgent.DAL;
+using MetricsAgent.DAL.Interfaces;
 
 namespace MetricsAgent.Controllers
 {
