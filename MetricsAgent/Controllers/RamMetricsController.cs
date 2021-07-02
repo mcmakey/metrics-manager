@@ -16,11 +16,6 @@ namespace MetricsAgent.Controllers
         private IRamMetricsRepository _repository;
         private readonly ILogger<RamMetricsController> _logger;
 
-        public RamMetricsController(IRamMetricsRepository repository)
-        {
-            _repository = repository;
-        }
-
         public RamMetricsController(IRamMetricsRepository repository, ILogger<RamMetricsController> logger)
         {
             _repository = repository;
@@ -30,10 +25,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] RamMetricsCreateRequest request)
         {
-            if (_logger is not null)
-            {
-                _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
-            }
+            _logger.LogInformation($"Create Time={request.Time}, Value={request.Value}");
 
             _repository.Create(new RamMetric
             {
@@ -47,10 +39,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("All")]
         public IActionResult GetAll()
         {
-            if (_logger is not null)
-            {
-                _logger.LogInformation("All");
-            }
+            _logger.LogInformation("All");
 
             var metrics = _repository.GetAll();
 
@@ -75,10 +64,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("getbytimeperiod/from/{fromTime}/to/{toTime}")]
         public IActionResult GetByTimePeriod([FromRoute] RamMetricsGetByPeriodRequest request)
         {
-            if (_logger is not null)
-            {
-                _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
-            }
+            _logger.LogInformation($"GetByTimePeriod fromTime={request.FromTime}, toTime={request.ToTime}");
 
             var metrics = _repository.GetByTimePeriod(request.FromTime, request.ToTime);
 

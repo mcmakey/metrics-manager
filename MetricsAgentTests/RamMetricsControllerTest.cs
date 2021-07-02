@@ -2,6 +2,7 @@ using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Models;
 using MetricsAgent.Requests;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
 using Xunit;
@@ -11,24 +12,26 @@ namespace MetricsAgentTests
     public class RamMetricsControllerTest
     {
         private RamMetricsController _controller;
-        private Mock<IRamMetricsRepository> _mock;
+        private Mock<IRamMetricsRepository> _mockRepository;
+        private Mock<ILogger<RamMetricsController>> _mockLogger;
 
         public RamMetricsControllerTest()
         {
-            _mock = new Mock<IRamMetricsRepository>();
-            _controller = new RamMetricsController(_mock.Object);
+            _mockRepository = new Mock<IRamMetricsRepository>();
+            _mockLogger = new Mock<ILogger<RamMetricsController>>();
+            _controller = new RamMetricsController(_mockRepository.Object, _mockLogger.Object);
         }
 
         [Fact]
         public void Create_ShouldCall_Create_From_Repository()
         {
-            _mock.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
+            _mockRepository.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
 
             var result = _controller.Create(
                     new RamMetricsCreateRequest { Time = 1, Value = 50 }
                 );
 
-            _mock.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
         }
 
         [Fact]
@@ -40,11 +43,11 @@ namespace MetricsAgentTests
                 new RamMetric {Id = 2, Value = 200, Time = 2}
             };
 
-            _mock.Setup(repository => repository.GetAll()).Returns(metrics);
+            _mockRepository.Setup(repository => repository.GetAll()).Returns(metrics);
 
             var result = _controller.GetAll();
 
-            _mock.Verify(repository => repository.GetAll(), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.GetAll(), Times.AtMostOnce());
         }
 
         [Fact]
@@ -56,13 +59,13 @@ namespace MetricsAgentTests
                 new RamMetric {Id = 2, Value = 200, Time = 2}
             };
 
-            _mock.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(metrics);
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(metrics);
 
             var result = _controller.GetByTimePeriod(
                     new RamMetricsGetByPeriodRequest { FromTime = 1, ToTime = 2 }
                 );
 
-            _mock.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
     }
 }

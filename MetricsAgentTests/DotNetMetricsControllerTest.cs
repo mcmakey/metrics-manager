@@ -2,6 +2,7 @@ using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Models;
 using MetricsAgent.Requests;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
 using Xunit;
@@ -11,24 +12,27 @@ namespace MetricsAgentTests
     public class DotNetMetricsControllerTest
     {
         private DotNetMetricsController _controller;
-        private Mock<IDotNetMetricsRepository> _mock;
+        private Mock<IDotNetMetricsRepository> _mockRepository;
+        private Mock<ILogger<DotNetMetricsController>> _mockLogger;
 
         public DotNetMetricsControllerTest()
         {
-            _mock = new Mock<IDotNetMetricsRepository>();
-            _controller = new DotNetMetricsController(_mock.Object);
+            //_mock = new Mock<IDotNetMetricsRepository>();
+            _mockRepository = new Mock<IDotNetMetricsRepository>();
+            _mockLogger = new Mock<ILogger<DotNetMetricsController>>();
+            _controller = new DotNetMetricsController(_mockRepository.Object, _mockLogger.Object);
         }
 
         [Fact]
         public void Create_ShouldCall_Create_From_Repository()
         {
-            _mock.Setup(repository => repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
+            _mockRepository.Setup(repository => repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
 
             var result = _controller.Create(
                     new DotNetMetricsCreateRequest { Time = 1, Value = 50 }
                 );
 
-            _mock.Verify(repository => repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
         }
 
 
@@ -41,11 +45,11 @@ namespace MetricsAgentTests
                 new DotNetMetric {Id = 2, Value = 200, Time = 2}
             };
 
-            _mock.Setup(repository => repository.GetAll()).Returns(metrics);
+            _mockRepository.Setup(repository => repository.GetAll()).Returns(metrics);
 
             var result = _controller.GetAll();
 
-            _mock.Verify(repository => repository.GetAll(), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.GetAll(), Times.AtMostOnce());
         }
 
         [Fact]
@@ -57,13 +61,13 @@ namespace MetricsAgentTests
                 new DotNetMetric {Id = 2, Value = 200, Time = 2}
             };
 
-            _mock.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(metrics);
+            _mockRepository.Setup(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>())).Returns(metrics);
 
             var result = _controller.GetByTimePeriod(
                     new DotNetMetricsGetByPeriodRequest { FromTime = 1, ToTime = 2 }
                 );
 
-            _mock.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
+            _mockRepository.Verify(repository => repository.GetByTimePeriod(It.IsAny<long>(), It.IsAny<long>()), Times.AtMostOnce());
         }
     }
 }
