@@ -36,10 +36,10 @@ namespace MetricsAgent.Controllers
             return Ok();
         }
 
-        [HttpGet("All")]
+        [HttpGet("all")]
         public IActionResult GetAll()
         {
-            _logger.LogInformation("All");
+            _logger.LogInformation("all");
 
             var metrics = _repository.GetAll();
 
