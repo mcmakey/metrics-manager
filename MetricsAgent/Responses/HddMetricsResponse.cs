@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MetricsAgent.DTO;
 using System.Collections.Generic;
 
 namespace MetricsAgent.Responses
@@ -11,12 +11,5 @@ namespace MetricsAgent.Responses
     public class HddMetricsByTimePeriodResponse
     {
         public List<HddMetricDto> Metrics { get; set; }
-    }
-
-    public class HddMetricDto
-    {
-        public DateTimeOffset Time { get; set; }
-        public int Value { get; set; }
-        public int Id { get; set; }
     }
 }

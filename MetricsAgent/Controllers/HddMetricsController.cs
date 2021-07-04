@@ -6,6 +6,7 @@ using MetricsAgent.Requests;
 using System.Collections.Generic;
 using MetricsAgent.Models;
 using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DTO;
 
 namespace MetricsAgent.Controllers
 {
@@ -53,8 +54,7 @@ namespace MetricsAgent.Controllers
                 response.Metrics.Add(new HddMetricDto
                 {
                     Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
-                    Value = metric.Value,
-                    Id = metric.Id
+                    Value = metric.Value
                 });
             }
 
@@ -78,8 +78,7 @@ namespace MetricsAgent.Controllers
                 response.Metrics.Add(new HddMetricDto
                 {
                     Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
-                    Value = metric.Value,
-                    Id = metric.Id
+                    Value = metric.Value
                 });
             }
 

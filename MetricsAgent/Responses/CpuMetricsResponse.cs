@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MetricsAgent.DTO;
 using System.Collections.Generic;
 
 namespace MetricsAgent.Responses
@@ -11,12 +11,5 @@ namespace MetricsAgent.Responses
     public class CpuMetricsByTimePeriodResponse
     {
         public List<CpuMetricDto> Metrics { get; set; }
-    }
-
-    public class CpuMetricDto
-    {
-        public DateTimeOffset Time { get; set; }
-        public int Value { get; set; }
-        public int Id { get; set; }
     }
 }
