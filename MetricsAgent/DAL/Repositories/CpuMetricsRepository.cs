@@ -7,11 +7,12 @@ namespace MetricsAgent.DAL
 {
     public class CpuMetricsRepository : ICpuMetricsRepository
     {
-        private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
+        private ConnectionManager _connectionManager = new ConnectionManager();
 
         public void Create(CpuMetric item)
         {
-            using var connection = new SQLiteConnection(ConnectionString);
+            using var connection = _connectionManager.CreateOpenedConnection();
+
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
@@ -25,7 +26,7 @@ namespace MetricsAgent.DAL
 
         public IList<CpuMetric> GetAll()
         {
-            using var connection = new SQLiteConnection(ConnectionString);
+            using var connection = _connectionManager.CreateOpenedConnection();
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
@@ -51,7 +52,7 @@ namespace MetricsAgent.DAL
 
         public IList<CpuMetric> GetByTimePeriod(long fromTime, long toTime)
         {
-            using var connection = new SQLiteConnection(ConnectionString);
+            using var connection = _connectionManager.CreateOpenedConnection();
             connection.Open();
 
             using var cmd = new SQLiteCommand(connection);
