@@ -1,3 +1,4 @@
+using AutoMapper;
 using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Models;
@@ -14,12 +15,14 @@ namespace MetricsAgentTests
         private RamMetricsController _controller;
         private Mock<IRamMetricsRepository> _mockRepository;
         private Mock<ILogger<RamMetricsController>> _mockLogger;
+        private Mock<IMapper> _mockMapper;
 
         public RamMetricsControllerTest()
         {
             _mockRepository = new Mock<IRamMetricsRepository>();
             _mockLogger = new Mock<ILogger<RamMetricsController>>();
-            _controller = new RamMetricsController(_mockRepository.Object, _mockLogger.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new RamMetricsController(_mockRepository.Object, _mockLogger.Object, _mockMapper.Object);
         }
 
         [Fact]

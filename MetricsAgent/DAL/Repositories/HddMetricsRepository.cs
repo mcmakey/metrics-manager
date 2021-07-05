@@ -25,13 +25,13 @@ namespace MetricsAgent.DAL
         {
             using var connection = _connectionManager.CreateOpenedConnection();
 
-            return connection.Query<HddMetric>("SELECT * FROM cpumetrics").ToList();
+            return connection.Query<HddMetric>("SELECT * FROM hddmetrics").ToList();
         }
 
         public IList<HddMetric> GetByTimePeriod(long fromTime, long toTime)
         {
             using var connection = _connectionManager.CreateOpenedConnection();
-            return connection.Query<HddMetric>("SELECT * FROM cpumetrics WHERE time >= @fromTime AND time <= @toTime",
+            return connection.Query<HddMetric>("SELECT * FROM hddmetrics WHERE time >= @fromTime AND time <= @toTime",
                 new
                 {
                     fromTime = fromTime,

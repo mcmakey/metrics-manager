@@ -10,6 +10,10 @@ namespace MetricsAgent.Helpers
         public MapperProfile()
         {
             CreateMap<CpuMetricsCreateRequest, CpuMetric>();
+            CreateMap<DotNetMetricsCreateRequest, DotNetMetric>();
+            CreateMap<HddMetricsCreateRequest, HddMetric>();
+            CreateMap<NetworkMetricsCreateRequest, NetworkMetric>();
+            CreateMap<RamMetricsCreateRequest, RamMetric>();
 
             CreateMap<CpuMetric, CpuMetricDto>();
             CreateMap<DotNetMetric, DotNetMetricDto>();

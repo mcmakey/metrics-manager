@@ -1,3 +1,4 @@
+using AutoMapper;
 using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Models;
@@ -14,12 +15,14 @@ namespace MetricsAgentTests
         private NetworkMetricsController _controller;
         private Mock<INetworkMetricsRepository> _mockRepository;
         private Mock<ILogger<NetworkMetricsController>> _mockLogger;
+        private Mock<IMapper> _mockMapper;
 
         public NetworkMetricsControllerTest()
         {
             _mockRepository = new Mock<INetworkMetricsRepository>();
             _mockLogger = new Mock<ILogger<NetworkMetricsController>>();
-            _controller = new NetworkMetricsController(_mockRepository.Object, _mockLogger.Object);
+            _mockMapper = new Mock<IMapper>();
+            _controller = new NetworkMetricsController(_mockRepository.Object, _mockLogger.Object, _mockMapper.Object);
         }
 
         [Fact]
