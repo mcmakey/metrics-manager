@@ -53,7 +53,7 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(new NetworkMetricDto
                 {
-                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Time = metric.Time,
                     Value = metric.Value
                 });
             }
@@ -77,7 +77,7 @@ namespace MetricsAgent.Controllers
             {
                 response.Metrics.Add(new NetworkMetricDto
                 {
-                    Time = DateTimeOffset.FromUnixTimeSeconds(metric.Time),
+                    Time = metric.Time,
                     Value = metric.Value
                 });
             }
