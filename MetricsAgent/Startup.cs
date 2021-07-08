@@ -31,7 +31,8 @@ namespace MetricsAgent
         {
             services.AddControllers();
 
-            services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            // services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddTransient<ICpuMetricsRepository, CpuMetricsRepository>();
             services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
             services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
             services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();

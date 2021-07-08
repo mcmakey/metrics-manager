@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DTO;
 using Microsoft.Extensions.Hosting;
 using Quartz;
@@ -16,7 +17,6 @@ namespace MetricsAgent.Helpers
         public IScheduler Scheduler { get; set; }
 
         public QuartzHostedService(
-            // ICpuMetricsRepository repository, // ? Было в методичке
             ISchedulerFactory schedulerFactory,
             IJobFactory jobFactory,
             IEnumerable<JobSchedule> jobSchedules)
