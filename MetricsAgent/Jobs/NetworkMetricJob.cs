@@ -14,7 +14,13 @@ namespace MetricsAgent.Jobs
         public NetworkMetricJob(INetworkMetricsRepository repository) 
         {
             _repository = repository;
-            _networkCounter = new PerformanceCounter("Network Interface", "Bytes Received/sec", "Qualcomm Atheros AR946x Wireless Network Adapter");
+
+            PerformanceCounterCategory category = new PerformanceCounterCategory("Network Interface");
+            
+            var instanceNames = category.GetInstanceNames();
+            var instanceName = instanceNames[0]; 
+
+            _networkCounter = new PerformanceCounter(category.CategoryName, "Bytes Received/sec", instanceName);
         }
 
         public Task Execute(IJobExecutionContext context)
