@@ -19,11 +19,11 @@ namespace MetricsAgent.Jobs
 
         public Task Execute(IJobExecutionContext context)
         {
-            var cpuUsageInPercents = Convert.ToInt32(_ramCounter.NextValue());
+            var ramUsageInPercents = Convert.ToInt32(_ramCounter.NextValue());
 
             var time = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-            _repository.Create(new Models.RamMetric { Time = time, Value = cpuUsageInPercents });
+            _repository.Create(new Models.RamMetric { Time = time, Value = ramUsageInPercents });
 
             return Task.CompletedTask;
         }
