@@ -1,7 +1,8 @@
-﻿using MetricsAgent.DAL.Interfaces;
+﻿using Dapper;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.Models;
 using System.Collections.Generic;
-using System.Data.SQLite;
+using System.Linq;
 
 namespace MetricsAgent.DAL
 {
@@ -12,70 +13,32 @@ namespace MetricsAgent.DAL
         public void Create(NetworkMetric item)
         {
             using var connection = _connectionManager.CreateOpenedConnection();
-            connection.Open();
 
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "INSERT INTO networkmetrics(value, time) VALUES(@value, @time)";
-            cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Parameters.AddWithValue("@time", item.Time);
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
+            connection.Execute("INSERT INTO networkmetrics(value, time) VALUES(@value, @time)",
+                new
+                {
+                    value = item.Value,
+                    time = item.Time
+                });
         }
 
         public IList<NetworkMetric> GetAll()
         {
             using var connection = _connectionManager.CreateOpenedConnection();
-            connection.Open();
 
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM networkmetrics";
-
-            var returnList = new List<NetworkMetric>();
-
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    returnList.Add(new NetworkMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = reader.GetInt64(1)
-                    });
-                }
-            }
-
-            return returnList;
+            return connection.Query<NetworkMetric>("SELECT * FROM networkmetrics").ToList();
         }
 
         public IList<NetworkMetric> GetByTimePeriod(long fromTime, long toTime)
         {
             using var connection = _connectionManager.CreateOpenedConnection();
-            connection.Open();
 
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM networkmetrics WHERE time >= @fromTime AND time <= @toTime";
-            cmd.Parameters.AddWithValue("@fromTime", fromTime);
-            cmd.Parameters.AddWithValue("@toTime", toTime);
-            cmd.Prepare();
-
-            var result = new List<NetworkMetric>();
-
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
+            return connection.Query<NetworkMetric>("SELECT * FROM networkmetrics WHERE time >= @fromTime AND time <= @toTime",
+                new
                 {
-                    result.Add(new NetworkMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = reader.GetInt64(1)
-                    });
-                }
-            }
-
-            return result;
+                    fromTime = fromTime,
+                    toTime = toTime
+                }).ToList();
         }
     }
 }
