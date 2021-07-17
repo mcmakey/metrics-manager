@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace MetricsAgent.DAL.Migrations
+namespace MetricsManager.DAL.Migrations
 {
     [Migration(1)]
     public class FirstMigration : Migration
@@ -9,28 +9,37 @@ namespace MetricsAgent.DAL.Migrations
         {
             Create.Table("cpumetrics")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("AgentId").AsInt32()
                 .WithColumn("Value").AsInt32()
                 .WithColumn("Time").AsInt64();
 
             Create.Table("dotnetmetrics")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("AgentId").AsInt32()
                 .WithColumn("Value").AsInt32()
                 .WithColumn("Time").AsInt64();
 
             Create.Table("hddmetrics")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("AgentId").AsInt32()
                 .WithColumn("Value").AsInt32()
                 .WithColumn("Time").AsInt64();
 
             Create.Table("networkmetrics")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("AgentId").AsInt32()
                 .WithColumn("Value").AsInt32()
                 .WithColumn("Time").AsInt64();
 
             Create.Table("rammetrics")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
+                .WithColumn("AgentId").AsInt32()
                 .WithColumn("Value").AsInt32()
                 .WithColumn("Time").AsInt64();
+
+            Create.Table("agents")
+                .WithColumn("AgentId").AsInt32()
+                .WithColumn("AgentUrl").AsString();
         }
 
         public override void Down()
@@ -40,6 +49,7 @@ namespace MetricsAgent.DAL.Migrations
             Delete.Table("hddmetrics");
             Delete.Table("networkmetrics");
             Delete.Table("rammetrics");
+            Delete.Table("agents");
         }
     }
 }

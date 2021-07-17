@@ -1,9 +1,9 @@
+using FluentMigrator.Runner;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
 
 namespace MetricsManager
 {
@@ -16,15 +16,22 @@ namespace MetricsManager
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<Agents>();
             services.AddControllers();
+
+            services.AddSingleton<Agents>();
+
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb.AddSQLite()
+                    .WithGlobalConnectionString(ConnectionString)
+                    .ScanIn(typeof(Startup).Assembly).For.Migrations())
+                .AddLogging(lb => lb.AddFluentMigratorConsole());
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
             if (env.IsDevelopment())
             {
@@ -41,6 +48,8 @@ namespace MetricsManager
             {
                 endpoints.MapControllers();
             });
+
+            migrationRunner.MigrateUp();
         }
     }
 }
