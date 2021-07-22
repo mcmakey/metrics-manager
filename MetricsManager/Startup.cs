@@ -1,10 +1,12 @@
 using FluentMigrator.Runner;
+using System;
 using MetricsManager.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Polly;
 
 namespace MetricsManager
 {
@@ -27,7 +29,8 @@ namespace MetricsManager
 
             services.AddHttpClient();
 
-            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>();
+            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
+                .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb.AddSQLite()
