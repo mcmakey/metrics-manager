@@ -1,4 +1,5 @@
 using FluentMigrator.Runner;
+using MetricsManager.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,10 @@ namespace MetricsManager
             services.AddControllers();
 
             services.AddSingleton<Agents>();
+
+            services.AddHttpClient();
+
+            services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>();
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb.AddSQLite()
