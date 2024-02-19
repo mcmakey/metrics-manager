@@ -9,3 +9,5 @@ namespace MetricsAgent.DAL
         void Create(T item);
     }
 }
+
+/*test*/
